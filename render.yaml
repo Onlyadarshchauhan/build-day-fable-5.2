@@ -1,0 +1,18 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# One Node web service; WebSockets, chat, voice signaling and the Claude API all run here.
+services:
+  - type: web
+    name: tiny-things-observatory
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/config
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ANTHROPIC_API_KEY
+        sync: false   # Render asks for this when you create the service; leave blank to run in offline mode
+      - key: AI_EFFORT
+        value: low

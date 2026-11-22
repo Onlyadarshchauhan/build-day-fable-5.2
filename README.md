@@ -16,6 +16,16 @@ npm test                                    # engine self-tests (puzzle solvabil
 
 To try multiplayer on one machine, open two browser tabs (each tab is its own player).
 
+### Deploy (Render, from this GitHub repo)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Onlyadarshchauhan/build-day-fable-5.2)
+
+1. Click the button and sign in to Render with GitHub.
+2. Render reads `render.yaml`. Paste your `ANTHROPIC_API_KEY` when asked (or leave it blank for offline mode), then click **Apply**.
+3. After about 2 minutes you get `https://tiny-things-observatory-xxxx.onrender.com`. Share it, and your friend joins with the room code or invite link. It's HTTPS, so voice works.
+
+Every push to `main` redeploys automatically. On the free plan the service sleeps after 15 idle minutes (the first visit after that takes about a minute to wake), and open rooms are cleared when it restarts.
+
 ### Playing with someone in another city
 
 Your friend has to be able to reach the server, and browsers only allow the microphone on **HTTPS** pages (or localhost). Either:
