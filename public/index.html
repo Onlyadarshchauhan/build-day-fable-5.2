@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Tiny Things Observatory</title>
+  <meta name="description" content="Pick up anything. Create a universe. Play with anyone." />
+  <meta name="theme-color" content="#0b1510" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><circle cx='20' cy='20' r='17' fill='%230b1510' stroke='%23c9a24d' stroke-width='2'/><circle cx='20' cy='20' r='5' fill='%239fe3c4'/></svg>" />
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div id="world-backdrop" aria-hidden="true"></div>
+
+  <header class="topbar" id="topbar">
+    <button class="brand" id="brand-home" aria-label="Tiny Things Observatory — home">
+      <svg viewBox="0 0 40 40" class="brand-mark" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 24 A14 14 0 0 1 34 24" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="20" cy="20" r="4" class="brand-core"/></svg>
+      <span>Tiny Things Observatory</span>
+    </button>
+    <div class="status-line mono" id="status-line">
+      <span id="ai-status" class="pill">AI lens …</span>
+      <span id="net-status" class="pill"><i class="dot"></i><span>connecting</span></span>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- ============ LANDING ============ -->
+    <section class="screen" id="screen-landing" data-screen="landing">
+      <div class="landing">
+        <div class="landing-copy">
+          <p class="eyebrow mono">Specimen catalogue · No. 0001</p>
+          <h1 class="display">The world is closer<br/>than you think.</h1>
+          <p class="lede">Every ordinary object hides an extraordinary universe. Discover what yours contains.</p>
+          <div class="cta-row">
+            <button class="btn btn-brass btn-lg" id="cta-discover">Discover a World</button>
+            <button class="btn btn-ghost btn-lg" id="cta-join">Join an Adventure</button>
+          </div>
+          <form class="join-inline" id="join-form" hidden>
+            <label class="mono label" for="join-code">Room code</label>
+            <div class="join-row">
+              <input id="join-code" class="input mono code-input" maxlength="5" autocomplete="off" autocapitalize="characters" placeholder="ABCDE" />
+              <button class="btn btn-brass" type="submit">Join</button>
+            </div>
+            <p class="form-error" id="join-error" role="alert"></p>
+          </form>
+          <p class="tagline mono">Pick up anything · Create a universe · Play with anyone</p>
+        </div>
+
+        <div class="specimen-tray" id="tray">
+          <div class="lens" id="dropzone" tabindex="0" role="button" aria-label="Upload a photo of an object: drop an image or press to choose">
+            <svg class="lens-ring" viewBox="0 0 200 200" aria-hidden="true">
+              <circle cx="100" cy="100" r="96" />
+              <circle cx="100" cy="100" r="84" class="tick-ring" />
+              <path d="M100 4 v12 M100 184 v12 M4 100 h12 M184 100 h12" />
+            </svg>
+            <div class="lens-inner">
+              <svg viewBox="0 0 48 48" class="lens-icon" aria-hidden="true"><path d="M10 34 L18 24 L24 30 L30 22 L38 34 Z" /><circle cx="17" cy="15" r="4"/><rect x="5" y="7" width="38" height="34" rx="4"/></svg>
+              <p class="lens-title">Place a specimen</p>
+              <p class="lens-sub">Drop a photo of any object here</p>
+            </div>
+          </div>
+          <div class="tray-actions">
+            <button class="btn btn-ghost" id="btn-upload">Upload photo</button>
+            <button class="btn btn-ghost" id="btn-camera">Use camera</button>
+            <input type="file" id="file-input" accept="image/*" hidden />
+            <input type="file" id="camera-input" accept="image/*" capture="environment" hidden />
+          </div>
+          <div class="samples">
+            <p class="mono label">Or borrow a specimen from the collection</p>
+            <div class="sample-row" id="sample-row"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DISCOVERY ============ -->
+    <section class="screen" id="screen-discovery" data-screen="discovery">
+      <div class="discovery">
+        <div class="scan-stage" id="scan-stage">
+          <div class="scan-lens">
+            <img id="preview-img" alt="Your specimen" />
+            <div class="scan-sweep"></div>
+            <svg class="scan-ring" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="97"/><circle cx="100" cy="100" r="90" class="tick-ring"/></svg>
+          </div>
+          <p class="mono specimen-label" id="specimen-label">SPECIMEN · UNCLASSIFIED</p>
+        </div>
+        <div class="discovery-panel">
+          <div id="discover-form">
+            <p class="eyebrow mono">Object discovery</p>
+            <h2 class="display-sm">Ready for examination</h2>
+            <label class="mono label" for="hint-input" id="hint-label">What is it? <span class="muted">(optional — the lens will look closely)</span></label>
+            <input id="hint-input" class="input" maxlength="60" placeholder="e.g. my grandmother's teacup" />
+            <p class="form-error" id="discover-error" role="alert"></p>
+            <div class="cta-row">
+              <button class="btn btn-brass btn-lg" id="btn-generate">Begin examination</button>
+              <button class="btn btn-ghost" id="btn-retake">Choose another</button>
+            </div>
+            <div class="cta-row" id="offline-row" hidden>
+              <button class="btn btn-ghost" id="btn-offline">Use the Offline Atlas instead</button>
+            </div>
+          </div>
+          <div id="discover-progress" hidden>
+            <p class="eyebrow mono">Examination in progress</p>
+            <h2 class="display-sm progress-msg" id="progress-msg" aria-live="polite">Examining specimen…</h2>
+            <ol class="progress-steps mono" id="progress-steps"></ol>
+            <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ REVEAL ============ -->
+    <section class="screen" id="screen-reveal" data-screen="reveal">
+      <div class="reveal" id="reveal"></div>
+    </section>
+
+    <!-- ============ MODE / NAME ============ -->
+    <section class="screen" id="screen-mode" data-screen="mode">
+      <div class="mode-wrap" id="mode-wrap"></div>
+    </section>
+
+    <!-- ============ INVITE ============ -->
+    <section class="screen" id="screen-invite" data-screen="invite">
+      <div class="invite" id="invite"></div>
+    </section>
+
+    <!-- ============ LOBBY ============ -->
+    <section class="screen" id="screen-lobby" data-screen="lobby">
+      <div class="room-layout">
+        <div class="room-main" id="lobby-main"></div>
+        <aside class="comms" id="comms-lobby"></aside>
+      </div>
+    </section>
+
+    <!-- ============ GAME ============ -->
+    <section class="screen" id="screen-game" data-screen="game">
+      <div class="room-layout game-layout">
+        <div class="room-main" id="game-main"></div>
+        <aside class="comms" id="comms-game"></aside>
+      </div>
+      <nav class="mobile-tabs" id="mobile-tabs">
+        <button data-tab="play" class="active">Mission</button>
+        <button data-tab="comms">Comms <span class="badge" id="unread" hidden>0</span></button>
+      </nav>
+    </section>
+  </main>
+
+  <!-- Comms panel (moved between lobby and game) -->
+  <template id="tpl-comms">
+    <div class="comms-inner">
+      <section class="voice-panel" id="voice-panel"></section>
+      <section class="chat-panel">
+        <header class="chat-head mono"><span>Field transmissions</span><span class="muted" id="chat-room"></span></header>
+        <ol class="chat-log" id="chat-log" aria-live="polite"></ol>
+        <form class="chat-form" id="chat-form">
+          <input class="input" id="chat-input" maxlength="300" placeholder="Transmit a message…" autocomplete="off" />
+          <button class="btn btn-brass btn-sm" type="submit" aria-label="Send">Send</button>
+        </form>
+      </section>
+    </div>
+  </template>
+
+  <div class="modal" id="camera-modal" hidden>
+    <div class="modal-card">
+      <video id="camera-video" playsinline autoplay muted></video>
+      <p class="form-error" id="camera-error"></p>
+      <div class="cta-row">
+        <button class="btn btn-brass" id="camera-snap">Capture specimen</button>
+        <button class="btn btn-ghost" id="camera-close">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="assertive"></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
